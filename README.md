@@ -29,7 +29,7 @@ Love Letter (clone/variation)
 Saturdays at 10am MST.
 
 # Vision Statement:
-We are creating a web application version of our own take on the game Love Letter.
+We are creating a web application version of our own take on the game Love Letter, complete with home page website, user login, and site navigation capabilities.
 
 # Motivation:
 To develop new skills relating to creating, hosting, and deploying a web-based application. We would also like to use this as a way to showcase our skills in a project portfolio for professional use.
