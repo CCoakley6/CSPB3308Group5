@@ -43,7 +43,7 @@ To develop new skills relating to creating, hosting, and deploying a web-based a
 * Utilizing the Agile process to maintain regular and productive communication to avoid roadblocks and help mitigate issues as they arise.
 
 # Development Method:
-Scrum/Agile.
+Scrum/Agile. We are going to have weekly agile meetings where we will talk about the previous week's progress, goals for the next week, and roadblocks to upcoming tasks we're trying to deploy. Collin Coakley is designated as our team's Scrum master, and we are all collaborating on task ideas and assignments. We are communicating regularly through discord so we can have ongoing conversations to stay agile.
 
 # Project Tracking Software Link:
 https://trello.com/w/thefightingmongooses1/home
