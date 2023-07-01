@@ -8,33 +8,40 @@
 	</head>
 	<body>
 		<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
-		  <!-- ... existing navbar code ... -->
 		</nav>
 		<div class="p-3 mb-2 bg-info text-white">
-			<h1>Create/Join Game Session</h1>
-			<div class="row">
-				<div class="col-sm-6">
-					<h2>Create a New Game</h2>
+			<h1 class="text-center">Create/Join Game Session</h1>
+			<div class="row justify-content-center">
+				<div class="col-sm-5">
+					<h2 class="text-center">Create a New Game</h2>
 					<form>
 						<div class="mb-3">
 							<label for="gameCode" class="form-label">Game Code</label>
 							<input type="text" class="form-control" id="gameCode" placeholder="Enter a unique code for your game">
 						</div>
-						<button type="submit" class="btn btn-primary">Create Game</button>
+						<div class="mb-3">
+							<label for="numPlayers" class="form-label">Number of Players</label>
+							<select class="form-control" id="numPlayers">
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-primary d-block mx-auto">Create Game</button>
 					</form>
 				</div>
-				<div class="col-sm-6">
-					<h2>Join an Existing Game</h2>
+				<div class="col-sm-5">
+					<h2 class="text-center">Join an Existing Game</h2>
 					<form>
 						<div class="mb-3">
 							<label for="joinGameCode" class="form-label">Game Code</label>
 							<input type="text" class="form-control" id="joinGameCode" placeholder="Enter the code of the game you want to join">
 						</div>
-						<button type="submit" class="btn btn-primary">Join Game</button>
+						<button type="submit" class="btn btn-primary d-block mx-auto">Join Game</button>
 					</form>
 				</div>
 			</div>
-			<a href="session-list.html" class="btn btn-secondary mt-3">View Existing Game Sessions</a>
+			<a href="session-list.html" class="btn btn-secondary d-block mx-auto mt-3">View Existing Game Sessions</a>
 			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 		</div>
 	</body>
