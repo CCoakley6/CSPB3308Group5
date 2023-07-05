@@ -15,3 +15,4 @@ In addition to the specific tasks listed in the Trello "Doing" tab, members of T
 * learning JavaScript so we can begin programming our game logic for future integration into the website. 
 * Working to identify the best tools to use to facilitate multiplayer gaming for our game that supports 2-4 players. We are currently weighing the pros and cons of two companies: PubNub and Ably. 
 * Using branches to make modifications to files in the GitHub repo
+* Members of Team 5 are working making a first sweep at the game logic while the rest of the team learns enough JavaScript to provide assistance in that regard.
