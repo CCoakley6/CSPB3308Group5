@@ -5,43 +5,110 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 		<title>About Us</title>
+		<style>
+			body {
+				background-color: #f8f9fa;
+			}
+            .card-body {
+                padding: 5rem; 
+            }
+			.card {
+				border-radius: 20px;
+				box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+			}
+            .text-green {
+                color: #008000;
+            }
+            .text-purple {
+                color: #800080;
+            }
+            .text-blue {
+                color: #0000FF;
+            }
+            .text-red {
+                color: #FF0000;
+            }
+            .text-orange {
+                color: #FFA500;
+            }
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+            }
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+            .card-body h3,
+            .card-body p {
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            .card-body h3 {
+                margin-bottom: 0;
+                visibility: visible;
+            }
+            .card-body p {
+                opacity: 0;
+                visibility: hidden;
+                font-size: 25px; /* Adjust the font size as per your preference */
+            }
+            .card-body:hover h3 {
+                opacity: 0;
+                visibility: hidden;
+            }
+            .card-body:hover p {
+                opacity: 1;
+                visibility: visible;
+            }
+		</style>
 	</head>
 	<body>
-		<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
-		  <!-- ... existing navbar code ... -->
-		</nav>
-		<div class="p-3 mb-2 bg-info text-white">
-			<h1>About Us</h1>
-			<p>We are the FightingMongooses, a group of passionate game developers who love the card game Love Letter. Our goal is to bring this game to a wider audience by creating an online version that can be played anywhere, anytime. This project is a part of our college coursework and we are excited to share it with the world.</p>
-			<h2>Our Team</h2>
-			<div class="row">
-				<div class="col-sm-4">
-					<img src="member1.jpg" alt="Collin" class="img-fluid">
-					<h3>Member 1</h3>
-					<p>[Description]</p>
+		<div class="container py-5">
+			<h1 class="text-center mb-5">About Us</h1>
+			<p class="text-center" style="font-size: 24px;">We are the FightingMongooses, a group of passionate game developers who love the card game Love Letter. Our goal is to bring this game to a wider audience by creating an online version that can be played anywhere, anytime. This project is a part of our college coursework and we are excited to share it with the world.</p>
+			<h2 class="text-center mb-4">Our Team</h2>
+			<div class="row justify-content-center">
+				<div class="col-sm-4 mb-4">
+					<div class="card">
+						<div class="card-body text-center text-green">
+							<h3>Collin</h3>
+							<p>Collin's description goes here...</p>
+						</div>
+					</div>
 				</div>
-				<div class="col-sm-4">
-					<img src="member2.jpg" alt="Dean" class="img-fluid">
-					<h3>Member 2</h3>
-					<p>[Description]</p>
+				<div class="col-sm-4 mb-4">
+					<div class="card">
+						<div class="card-body text-center text-purple">
+							<h3>Dean</h3>
+							<p>Dean's description goes here...</p>
+						</div>
+					</div>
 				</div>
-				<div class="col-sm-4">
-					<img src="member3.jpg" alt="Shibo" class="img-fluid">
-					<h3>Member 3</h3>
-					<p>[Description]</p>
+				<div class="col-sm-4 mb-4">
+					<div class="card">
+						<div class="card-body text-center text-blue">
+							<h3>Shibo</h3>
+							<p>Shibo's description goes here...</p>
+						</div>
+					</div>
 				</div>
-				<div class="col-sm-4">
-					<img src="member4.jpg" alt="Harper" class="img-fluid">
-					<h3>Member 4</h3>
-					<p>[Description]</p>
+				<div class="col-sm-4 mb-4">
+					<div class="card">
+						<div class="card-body text-center text-orange">
+							<h3>Harper</h3>
+							<p>Harper's description goes here...</p>
+						</div>
+					</div>
 				</div>
-				<div class="col-sm-4">
-					<img src="member5.jpg" alt="Roman" class="img-fluid">
-					<h3>Member 5</h3>
-					<p>[Description]</p>
+				<div class="col-sm-4 mb-4">
+					<div class="card">
+						<div class="card-body text-center text-red">
+							<h3>Roman</h3>
+							<p>Roman's description goes here...</p>
+						</div>
+					</div>
 				</div>
 			</div>
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 		</div>
 	</body>
 </html>
