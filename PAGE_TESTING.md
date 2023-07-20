@@ -1,4 +1,6 @@
 # Landing Page
+
+### Page Title
 Welcome to A Love Letter to the Game Love Letter
 
 ### Page Description
@@ -16,10 +18,10 @@ This is the landing page for our game, "A Love Letter to the Game Love Letter". 
 
 The layout and design of the page are clean and modern, with a focus on usability. The color scheme is consistent with the game's branding.
 
-![Mockup or hand drawn image of the page in here]
+![game_mock](./Page%20Mockups/landing_mock.png)
 
 ### Parameters needed for the page
-No parameters are needed for this page.
+None
 
 ### Data needed to render the page
 - **Game Description**: A brief description of the game. This should be written in a way that is engaging and enticing to visitors.
@@ -48,7 +50,7 @@ About Us
 ### Page Description
 This page introduces the team behind the project. It contains a brief introduction about the team and individual cards for each team member. Each card initially displays the team member's name. When the mouse pointer hovers over a card, the name fades out and a description of the team member fades in.
 
-![Mockup of the About Us page](remove that if we do not have it)
+![game_mock](./Page%20Mockups/about_mock.png)
 
 ### Parameters needed for the page
 None
@@ -75,16 +77,18 @@ Create/Join Game Session
 ### Page Description
 This page provides the functionality for users to either create a new game or join an existing game. It contains two forms, one for creating a new game and another for joining an existing game. The form for creating a new game has a dropdown for selecting the number of players. The form for joining an existing game has an input field for entering the game code. There is also a link to view existing game sessions.
 
-![Mockup of the Create/Join Game Session page](remove that if we do not have it)
+![game_mock](./Page%20Mockups/session_mock.png)
 
 ### Parameters needed for the page
 None
 
 ### Data needed to render the page
-None
+- **Room_ID**: display a list of available rooms
+- **Host Name**: show the host's name
+- **Players** : display the number of players in the specific room
 
 ### Link destinations for the page
-- View Existing Game Sessions: session-list.html
+None
 
 ### List of tests for verifying the rendering of the page
 1. Check if the page loads without any errors.
@@ -92,40 +96,94 @@ None
 3. Check if the dropdown in the "Create a New Game" form correctly displays the options for the number of players.
 4. Check if the input field in the "Join an Existing Game" form accepts text input.
 5. Check if the "Create Game" and "Join Game" buttons submit the respective forms.
-6. Check if the "View Existing Game Sessions" link redirects to the correct page.
 
 
+# Game Page
 
-# Player 2 - 4 Card Game Interface
+### Page Title
+
+Game Room - ROOM_ID
 
 ### Page Description
 
-The `player_2.html` file implements the interface for a two-player card game using HTML and CSS. Each player is presented with a hand of cards and a discard pile. The HTML elements are styled using CSS to properly position these components on the page, including visual effects such as hover transformations for cards. This code does not handle the game's logic.
+The page is a multiplayer card game page where players can join a specific room and play a card game together in real-time. The game allows multiple players to interact with each other, play cards, and track their readiness for the game. Players can see the list of participants in the room, and the game starts when the host decides to start it. There are three different layouts generated based on the number of players participating in the room. The layout consists of four player positions: South, North, West, and East, each having a hand of cards and a discard pile.
 
-![Player 2 ,3, or 4 Card Game Interface Mockup]
+![game_mock](./Page%20Mockups/game_mock.png)
 
 ### Parameters needed for the page
 
-- **Card Images:** Update the `src` attribute in each `img` tag with the path to our card images.
+- **ROOM_ID**: Unique identifier for the room where players will join and play the game.
 
 ### Data needed to render the page
 
-- **Player Data:** Information like player names or avatars, if applicable later.
-- **Game State:** Data on the current state of the game, including the cards in each player's hand and discard pile, and the cards remaining in the deck.
+1. Player Information:
+    - **Name**: name of the player.
+    - **Room_ID**: Unique identifier for the room where the player is in.
+    - **Host Status**: A boolean indicating if the player is the host of the room
+
+2. Game Data:
+    - **List of Players**: Each player's name and readiness status (Ready or Not Ready).
+    - **Cards in Hand**: The player's current hand of cards.
+    - **Cards in Discard Pile**: The player's discard pile.
 
 ### Link destinations for the page
 
-This page doesn't contain any outgoing links yet, a complete game application might include links to:
-
-- Home or menu page
-- Rules or instructions page
-- Scores or player rankings page
+- **Homepage ('/')**: The player can use this link to leave the current room and return to the homepage.
 
 ### List of tests for verifying the rendering of the page
 
-- Verify the correct positioning of the game container, player divisions, hand and discard piles, and the deck.
-- Check that the correct number of card images are displayed in each player's hand and discard pile, and in the deck.
-- Confirm the hover effects functionality for the cards in the hand and discard pile.
-- Ensure that the appropriate card images are displayed, based on the game state.
+1. Test player name and room ID rendering:
+- Set `name` to "David" and `room_id` to "3308".
+- Verify that "Game Room - 3308" is displayed as the page title.
+- Verify that the player's name "David" is displayed in the player list.
 
-These tests can also be applied to similar pages (`player_3.html` and `player_4.html`) which are designed for 3 and 4 players respectively. It's crucial to verify that the correct number of player divisions are displayed and the cards are evenly distributed among all players.
+2. Test host and non-host rendering:
+
+- Set `isHost` to true for the current player and verify that the "Start Game" and "Leave Room" buttons are displayed.
+- Set `isHost` to false for another player in the room, verify that the "Ready" and "Leave Room" buttons are displayed, and test toggle ready status.
+
+3. Test player list rendering:
+
+- Set a list of players with their names and readiness status.
+- Verify that the player list displays each player's name and readiness status correctly.
+
+4. Test game layout rendering:
+
+- Verify that the `room_container` is initially displayed, and the `game_container` is hidden.
+- Verify that the `game_container` is now displayed, and the `room_container` is hidden when the host clicks start button.
+
+5. Test card rendering:
+
+- Set the data for players with their cards in hand and discard pile.
+- Verify that the cards in hand and discard pile are correctly displayed for each player's position.
+
+6. Test card interactions:
+
+- Verify that the current player clicks the deck and draws a card when it is their turn.
+- Verify that the card is moved from the player's hand to their discard pile when playing a card.
+
+
+# Error Page
+
+### Page Title
+Love Letter 404 Error Page
+
+### Page Description
+This is a custom error page that is displayed when a user navigates to a non-existent or broken link on the website. Instead of the default browser error message, the page will have a donut-themed design to maintain the website's visual identity. It will inform the user that they have reached a wrong page and provide options to navigate back to the home page or the session page.
+
+![error_mock](./Page%20Mockups/error_mock.png)
+
+### Parameters needed for the page:
+None
+
+### Data needed to render the page:
+None
+
+### Link destinations for the page:
+- **Home page** : redirect the user to the landing page
+- **Session page** : redirect the user to the session page
+
+### List of tests for verifying the rendering of the page:
+- Test the display of the custom 404 error message with the donut-themed design.
+- Test if the home page link redirects the user to landing page
+- Test if the session page link redirects the user to session page
