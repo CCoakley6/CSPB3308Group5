@@ -8,6 +8,7 @@ socketio = SocketIO(app)
 
 rooms = {}
 
+
 def create_deck():
     deck = []
     for card in cards:
@@ -17,6 +18,7 @@ def create_deck():
             number -= 1
     random.shuffle(deck)
     return deck
+
 
 cards = [
     {
@@ -70,55 +72,73 @@ cards = [
 ]
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/")
 def index():
+    content = """
+    <h1>Welcome to CS 3308</h1>
+    """
+
+    return content
+
+
+@app.route('/session', methods=['GET', 'POST'])
+def game_session():
     if request.method == 'POST':
-        player_name = request.form['name']
-        room_id = request.form['room_id']
-        action = request.form['action']
+        playerName = request.form.get("name")
+        numPlayers = request.form.get("mySelect")
+        roomID = request.form.get("room-id")
 
-        session['userInfo'] = {
-            "name": player_name,
-            "room_id": room_id
-        }
+        if numPlayers:
+            # Fake Room ID, Will be Replaced
+            print("create")
+            roomID = "1234"
+            session['userInfo'] = {
+                "name": playerName,
+                "roomID": roomID,
+                "isHost": True
+            }
+            return redirect(f'/room/{roomID}')
+        else:
+            print("join....")
+            session['userInfo'] = {
+                "name": playerName,
+                "roomID": roomID,
+                "isHost": False
+            }
 
-        if action == 'join':
-            session['userInfo']['is_host'] = False
-        elif action == 'create':
-            session['userInfo']['is_host'] = True
+            return redirect(f'/room/{roomID}')
 
-        return redirect(f'/room/{room_id}')
-
-    return render_template('index.html')
+    return render_template('session.html')
 
 
-@app.route('/room/<room_id>')
-def room(room_id):
-    player_name = session.get("userInfo").get("name")
-    is_host = session.get("userInfo").get("is_host")
+@app.route('/room/<roomID>')
+def room(roomID):
+    playerName = session.get("userInfo").get("name")
+    isHost = session.get("userInfo").get("isHost")
 
-    if not player_name:
+    if not playerName:
         return redirect('/')
 
-    return render_template('room.html', room_id=room_id, name = player_name, is_host=is_host)
+    return render_template('room.html', roomID=roomID, name=playerName, isHost=isHost)
+
 
 @socketio.on('join')
 def on_join(data):
-    player_name = data['name']
-    room_id = data['room_id']
+    playerName = data['name']
+    roomID = data['roomID']
 
-    join_room(room_id)
+    join_room(roomID)
 
-    if room_id not in rooms:
-        rooms[room_id] = {'players': [], 'status': False}
+    if roomID not in rooms:
+        rooms[roomID] = {'players': [], 'gameStatus': False}
 
-    players = rooms[room_id]["players"]
+    players = rooms[roomID]["players"]
 
     player = {
         'sid': request.sid,
-        'name': player_name,
-        'room_id': room_id,
-        'ready': True if session.get("userInfo").get("is_host") else False,
+        'name': playerName,
+        'roomID': roomID,
+        'readyStatus': True if session.get("userInfo").get("isHost") else False,
         'hand': [],
         'discard': [],
         'token': 0,
@@ -126,77 +146,100 @@ def on_join(data):
     }
 
     players.append(player)
-
-    emit('playerJoined', {'name': player_name}, room=room_id)
-    emit('updatePlayerList', {'players': players}, room = room_id)
+    emit('playerJoined', {'name': playerName}, room=roomID)
+    emit('updatePlayerList', {'players': players}, room=roomID)
 
 
 @socketio.on('ready')
 def on_ready(data):
-    player_name = data['name']
-    room_id = data['room_id']
-    ready = data["ready"]
+    playerName = data['name']
+    roomID = data['roomID']
+    ready = data["readyStatus"]
 
-    players = rooms[room_id]["players"]
-    player = next((p for p in players if p['name'] == player_name), None)
+    players = rooms[roomID]["players"]
+    player = next((p for p in players if p['name'] == playerName), None)
 
     if player is not None:
-        player['ready'] = ready
-       
-    emit('updatePlayerList', {'players': players}, room=room_id)  
+        player['readyStatus'] = ready
+
+    emit('updatePlayerList', {'players': players}, room=roomID)
+
 
 @socketio.on('startGame')
 def on_start_game(data):
-    room_id = data["room_id"]
-    players = rooms[room_id]['players']
+    roomID = data["roomID"]
+    players = rooms[roomID]['players']
 
-    all_ready = all(p['ready'] for p in players)
+    all_ready = all(p['readyStatus'] for p in players)
     if len(players) < 2:
-        emit('message', {'message': 'Not Enough Players!'}, room = room_id)
+        emit('message', {'message': 'Not Enough Players!'}, room=roomID)
     elif all_ready == False:
-        emit('message', {'message': 'Not All Players Are Ready!'}, room = room_id)
+        emit('message', {
+             'message': 'Not All Players Are Ready!'}, room=roomID)
     else:
         deck = create_deck()
         for player in players:
-             player['hand'].append(deck.pop())
-        rooms[room_id]['deck'] = deck
-        emit("game_start", {"players": rooms[room_id]['players']}, room = room_id)
+            player['hand'].append(deck.pop())
+        rooms[roomID]['deck'] = deck
+        emit("game_start", {
+             "players": rooms[roomID]['players']}, room=roomID)
         if len(deck) > 0 and len(players) > 1:
             index = random.randint(0, len(players) - 1)
-            current_player = players[index]
-            current_player['isMyTurn'] = True
-            print(current_player)
-        emit("start_round", {"player": current_player}, room = room_id)
+            currentPlayer = players[index]
+            currentPlayer['isMyTurn'] = True
+        rooms[roomID]["players"][index] = currentPlayer
+        emit("start_round", {"player": currentPlayer}, room=roomID)
+
 
 @socketio.on('drawCard')
 def draw_card(data):
-    # does not work
-    current_player = data["player"]
-    room_id = data["room_id"]
-    players = rooms[room_id]["players"]
-    deck = rooms[room_id]["deck"]
+    currentPlayer = data["player"]
+    roomID = data["roomID"]
+    players = rooms[roomID]["players"]
+    deck = rooms[roomID]["deck"]
     idx = 0
     for i, player in enumerate(players):
-        if player.get('sid') == current_player["sid"]:
-            index = i
+        print("AAAAAAAAAAAAAAAAAAAA")
+        print(player)
+        if player.get('sid') == currentPlayer["sid"]:
+            idx = i
             break
     if len(deck) > 1:
         players[idx]["hand"].append(deck.pop())
-    rooms[room_id]["deck"] = deck
-    emit('updateGameStatus', {"players": players}, room = room_id)
+    rooms[roomID]["deck"] = deck
+    emit('updateGameStatus', {"players": players}, room=roomID)
+
+
+@socketio.on('playcard')
+def play_card(data):
+    roomID = data["roomID"]
+    playerIndex = data["playerIndex"]
+    player = data["player"]
+    players = rooms[roomID]["players"]
+    player["isMyTurn"] = False
+    rooms[roomID]["players"][playerIndex] = player
+    
+    nextPlayerIndex = (playerIndex + 1) % len(players)
+    nextPlayer = players[nextPlayerIndex]
+    nextPlayer["isMyTurn"] = True
+    rooms[roomID]["players"][nextPlayerIndex] = nextPlayer
+    emit("updateGameStatus", {"players": rooms[roomID]["players"]}, room=roomID)
+    emit('start_round', {"player": nextPlayer}, room=roomID)
 
 
 @socketio.on('leave')
 def on_leave(data):
-    room_id = data["room_id"]
-    leave_room(room_id)
+    roomID = data["roomID"]
+    leave_room(roomID)
 
-    players = rooms[room_id]["players"]
+    players = rooms[roomID]["players"]
     player = next((p for p in players if p['sid'] == request.sid), None)
-   
-    emit('playerLeft', {'name': player['name']}, room = room_id)
+
+    emit('playerLeft', {'name': player['name']}, room=roomID)
     del player
-    emit('updatePlayerList', {'players': rooms[room_id]["players"]}, room=room_id)  
+    emit('updatePlayerList', {
+         'players': rooms[roomID]["players"]}, room=roomID)
+
 
 if __name__ == '__main__':
     socketio.run(app)

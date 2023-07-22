@@ -6,31 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
-    <title>Card Game - Room {{ room_id }}</title>
+    <title>Game Room - {{ roomID }}</title>
 </head>
 
 <body>
-    <div class="room_container" style="display: block;">
-        <h1>Card Game - Room {{ room_id }}</h1>
-        <h3>Players:</h3>
-        <ul id="playerList"></ul>
+    <div class="room-container" style="display: block;">
+        <table id="room-header">
+            <tr>
+                <th>Room ID</th>
+                <th>Host Name</th>
+                <th>Players</th>
+            </tr>
+            <tr>
+                <td>1234</td>
+                <td>David</td>
+                <td>1 / 2</td>
+            </tr>
+        </table>
 
-        {% if is_host %}
-        <div>
-            <button id="start-btn" onclick="startGame()">Start Game</button>
-            <button onclick="leaveRoom()">Leave Room</button>
+        <div id="player-list">
+        </div>
+
+        {% if isHost %}
+        <div class="buttons">
+            <button id="start-button" onclick="startGame()">Start Game</button>
+            <button id="leave-button" onclick="leaveRoom()">Leave Room</button>
         </div>
         {% else %}
-        <div>
-            <button id="ready-btn" onclick="toggleReady()">Ready</button>
-            <button onclick="leaveRoom()">Leave Room</button>
+        <div class="buttons">
+            <button id="ready-button" onclick="toggleReady()">Ready</button>
+            <button id="leave-button" onclick="leaveRoom()">Leave Room</button>
         </div>
-
         {% endif %}
     </div>
 
-    <div class="game_container" style="display: none;">
+    <div class="game-container" style="display: none;">
         <div class="south">
+            <div class="info">
+            </div>
             <ul class="discard">
             </ul>
             <ul class="hand">
@@ -38,6 +51,8 @@
         </div>
 
         <div class="north">
+            <div class="info">
+            </div>
             <ul class="discard">
             </ul>
             <ul class="hand">
@@ -45,6 +60,8 @@
         </div>
 
         <div class="west">
+            <div class="info">
+            </div>
             <ul class="discard">
             </ul>
             <ul class="hand">
@@ -52,6 +69,8 @@
         </div>
 
         <div class="east">
+            <div class="info">
+            </div>
             <ul class="discard">
             </ul>
             <ul class="hand">
@@ -68,7 +87,7 @@
         socket.on('connect', function () {
             socket.emit('join', {
                 name: '{{name}}',
-                room_id: '{{room_id}}'
+                roomID: '{{roomID}}'
             });
         })
 
@@ -83,14 +102,20 @@
         })
 
         socket.on('updatePlayerList', function (data) {
-            console.log(data);
-            const playerList = document.getElementById('playerList');
-            playerList.innerHTML = '';
-
+            const playerList = document.getElementById('player-list');
+            playerList.innerHTML = "";
             data.players.forEach(function (player) {
-                var li = document.createElement('li');
-                li.innerText = `${player.name} - ${player.ready ? "Ready" : "Not Ready"}`;
-                playerList.appendChild(li);
+                var item = document.createElement('div');
+                item.classList.add("list-item");
+                item.innerHTML = `
+                <img src="../static/images/person-icon.jpg" alt="Player Image" />
+                <h2 class="player-name">${player.name}</h2>
+                <div class="readiness-status">
+                    <span class="status-label">Readiness:</span>
+                    <span class="status-value">${player.readyStatus ? "Ready" : "Not Ready"}</span>
+                </div>
+                `;
+                playerList.appendChild(item);
             })
         })
 
@@ -99,74 +124,94 @@
         })
 
         socket.on('game_start', function (data) {
-            console.log(data);
-            var players = data.players;
-            const room_container = document.querySelector(".room_container");
-            const game_container = document.querySelector(".game_container");
-
-            room_container.style.display = "none";
-            game_container.style.display = "block";
-
-            var startIdx = players.findIndex(player => player.sid == socket.id)
-
-            if (players.length == 2) {
-                for (var player of players) {
-                    if (player.sid == socket.id) {
-                        document.querySelector(".south .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${player.hand[0].value}.png" alt=""></li>`
-                    } else {
-                        document.querySelector(".north .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${player.hand[0].value}.png" alt=""></li>`
-                    }
-                }
-            } else {
-                for (let i = 0; i < players.length; i++) {
-                    let playerIndex = (startIdx + i) % players.length;
-
-                    if (i === 0) {
-                        document.querySelector(".south .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
-                    } else if (i === 1) {
-                        document.querySelector(".west .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
-                    } else if (i === 2) {
-                        document.querySelector(".north .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
-                    } else if (i === 3) {
-                        document.querySelector(".east .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
-                    }
-                }
-            }
-
+            const roomContainer = document.querySelector(".room-container");
+            const gameContainer = document.querySelector(".game-container");
+            roomContainer.style.display = "none";
+            gameContainer.style.display = "block";
+            updateCards(data.players);
         });
 
-        socket.on('start_round', function(data){
-            console.log(data);
-            var current_player = data.player
-            if (current_player.sid = socket.id && current_player.isMyTurn) {
-                socket.emit('drawCard', {
-                    player: current_player,
-                    room_id: '{{ room_id }}'
-                })
+        socket.on('start_round', function (data) {
+            var currentPlayer = data.player
+            if (currentPlayer.sid == socket.id && currentPlayer.isMyTurn) {
+                var deck = document.querySelector(".deck img");
+                deck.onclick = function () {
+                    socket.emit('drawCard', {
+                        player: currentPlayer,
+                        roomID: '{{ roomID }}'
+                    })
+                    this.onclick = null;
+                }
             }
         })
 
-        socket.on("updateGameStatus", function(data){
-            console.log('Does not work')
-            var players = data.players
-            var startIdx = players.findIndex(player => player.sid == socket.id)
+        function renderCards(player, direction, playerIndex) {
+            var info = document.querySelector(`.${direction} .info`);
+            var hand = document.querySelector(`.${direction} .hand`);
+            var discard = document.querySelector(`.${direction} .discard`);
+            var cardsInHand = '';
+            var cardsInDiscard = '';
+
+            console.log(player)
+            info.innerHTML = `
+            <span>${player.name}</span>
+            <span>${'⭐'.repeat(player.token)}</span>
+            ${player.isMyTurn ? "<span class ='active'> Your Turn </span>" : "<span></span>"}
+            `
+
+            for (var i = 0; i < player.hand.length; i++) {
+                cardsInHand +=
+                    `<li><img src="/static/images/card_face${player.hand[i].value}.png" alt=""></li>`;
+            }
+            hand.innerHTML = cardsInHand;
+            hand.addEventListener("click", function (event) {
+                if (player.isMyTurn) {
+                    playCard(event, player, playerIndex);
+                    hand.removeEventListener("click", playCard);
+                }
+            });
+
+            for (var j = 0; j < player.discard.length; j++) {
+                cardsInDiscard += `<li><img src="/static/images/card_face${player.discard[j].value}.png" alt=""></li>`;
+            }
+            discard.innerHTML = cardsInDiscard;
+        }
+
+        function playCard(event, player, playerIndex) {
+            var clickedCardElement = event.target;
+            var cardIndex = -1;
+
+            // Find the closest parent <li> element by traversing up the DOM tree
+            while (clickedCardElement !== null) {
+                if (clickedCardElement.tagName === 'LI') {
+                    cardIndex = Array.from(clickedCardElement.parentNode.children).indexOf(clickedCardElement);
+                    break;
+                }
+                clickedCardElement = clickedCardElement.parentElement;
+            }
+
+            if (cardIndex >= 0 && cardIndex < player.hand.length) {
+                var playedCard = player.hand.splice(cardIndex, 1)[0];
+                player.discard.push(playedCard);
+                socket.emit("playcard", {
+                    player: player,
+                    roomID: player.roomID,
+                    playerIndex: playerIndex
+                });
+            }
+        }
+
+
+        function updateCards(players) {
+            console.log(players);
+            var startIdx = players.findIndex(player => player.sid == socket.id);
 
             if (players.length == 2) {
                 for (var player of players) {
                     if (player.sid == socket.id) {
-                        var content = ''
-                        for (var i = 0; i < player.hand.length; i++) {
-                            content += `<li><img src="/static/images/card_face${player.hand[i].value}.png" alt=""></li>`
-                        }
+                        renderCards(player, "south", startIdx);
                     } else {
-                        document.querySelector(".north .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${player.hand[0].value}.png" alt=""></li>`
+                        renderCards(player, "north", ((startIdx + 1) % players.length));
                     }
                 }
             } else {
@@ -174,23 +219,24 @@
                     let playerIndex = (startIdx + i) % players.length;
 
                     if (i === 0) {
-                        document.querySelector(".south .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
+                        renderCards(players[playerIndex], "south", playerIndex);
                     } else if (i === 1) {
-                        document.querySelector(".west .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
+                        renderCards(players[playerIndex], "west", playerIndex);
                     } else if (i === 2) {
-                        document.querySelector(".north .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
+                        renderCards(players[playerIndex], "north", playerIndex);
                     } else if (i === 3) {
-                        document.querySelector(".east .hand").innerHTML =
-                            `<li><img src="/static/images/card_face${players[playerIndex].hand[0].value}.png" alt=""></li>`
+                        renderCards(players[playerIndex], "east", playerIndex);
                     }
                 }
             }
+        }
+
+        socket.on("updateGameStatus", function (data) {
+            updateCards(data.players);
         })
+
         function toggleReady() {
-            var readyBtn = document.getElementById('ready-btn');
+            var readyBtn = document.getElementById('ready-button');
             var isReady = readyBtn.innerText;
 
             if (isReady === 'Ready') {
@@ -201,22 +247,21 @@
 
             socket.emit('ready', {
                 name: '{{ name }}',
-                room_id: '{{ room_id }}',
-                ready: readyBtn.innerText !== 'Ready'
+                roomID: '{{ roomID }}',
+                readyStatus: readyBtn.innerText !== 'Ready'
             });
         }
 
         function leaveRoom() {
             socket.emit('leave', {
-                room_id: '{{ room_id }}'
+                roomID: '{{ roomID }}'
             })
-            // Redirect back to the main page
             window.location.href = '/';
         }
 
         function startGame() {
             socket.emit('startGame', {
-                room_id: '{{ room_id }}'
+                roomID: '{{ roomID }}'
             });
         }
     </script>

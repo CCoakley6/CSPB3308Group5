@@ -4,7 +4,120 @@
     box-sizing: border-box;
 }
 
-.game_container {
+/* room_container */
+.room-container {
+    position: relative;
+    min-height: 100vh;
+    background-color: #2a8d96;
+}
+#room-header {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    width: 40%;
+    transform: translateX(-50%);
+    text-align: center;
+    background-color: white;
+    border-radius: 15px;
+}
+
+#room-header tr:nth-child(1) th {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+#room-header tr:nth-child(2) td {
+    font-size: 18px;
+    padding: 15px 0;
+}
+
+#player-list {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.list-item {
+    width: 21%;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 0 15px;
+}
+
+.list-item img {
+    width: 70%;
+    height: 70%;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.player-name {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.readiness-status {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.status-label {
+    font-weight: bold;
+}
+
+.status-value {
+    margin-left: 5px;
+    color: #4CAF50;
+}
+
+/* buttons */
+.buttons {
+    position: absolute;
+    left: 50%;
+    bottom: 10%;
+    transform: translateX(-50%);
+}
+
+#start-button, #leave-button, #ready-button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    border-radius: 12px;
+    box-shadow: 0 4px #999;
+}
+
+#start-button:hover, #leave-button:hover, #ready-button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#start-button:active, #leave-button:active, #ready-button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666;
+    transform: translateY(4px);
+}
+
+
+.game-container {
     overflow: hidden;
     position: relative;
     width: 100%;
@@ -23,6 +136,26 @@
 .south ul {
     list-style: none;
 }
+
+.south .info {
+    position: relative;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 1%;
+}
+
+.south .info span {
+    width: 20%;
+    font-weight: bold;
+}
+
+.south .info .active {
+    position: absolute;
+    top: -100%;
+    color: red;
+}
+
 
 .south .hand {
     display: flex;
@@ -85,6 +218,26 @@
     list-style: none;
 }
 
+.north .info {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    top: 105%;
+    text-align: center;
+    justify-content: center;
+}
+
+.north .info span {
+    width: 20%;
+    font-weight: bold;
+}
+
+.north .info .active {
+    position: absolute;
+    top: 105%;
+    color: red;
+}
+
 .north .hand {
     display: flex;
     width: 50%;
@@ -95,6 +248,7 @@
 .north .hand li {
     width: 35%;
     margin: 0 10px;
+    transform: rotate(-180deg);
 }
 
 .north .hand li img,
@@ -123,7 +277,7 @@
 }
 
 .north .hand li:hover {
-    transform: translateY(10px);
+    transform: rotate(-180deg) translateY(-10px);
     z-index: 100;
 }
 
@@ -138,7 +292,7 @@
     width: 55%;
     top: 33%;
     left: -20.5%;
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
 }
 
 .west ul {
@@ -165,33 +319,31 @@
 .west .discard li {
     position: absolute;
     width: 12%;
+    transform: rotate(-90deg);
 }
 
 .west .discard li:nth-child(1) {
-    top: -4%;
-    left: 9%;
-    transform: rotate(90deg);
+    top: 33%;
+    left: 78%;
 }
 
 .west .discard li:nth-child(2) {
-    top: 15%;
-    left: 12%;
-    transform: rotate(90deg);
+    top: 14%;
+    left: 75%;
 }
 
 .west .discard li:nth-child(3) {
-    top: 34%;
-    left: 15%;
-    transform: rotate(90deg);
+    top: -5%;
+    left: 72%;
 }
 
 .west .hand li:hover {
-    transform: translateY(10px);
+    transform: translateY(-10px);
     z-index: 100;
 }
 
 .west .discard li:hover {
-    transform: rotate(90deg) scale(1.5);
+    transform: rotate(-90deg) scale(1.5);
     z-index: 100;
 }
 
@@ -202,7 +354,7 @@
     width: 55%;
     top: 36%;
     left: 93%;
-    transform: translateX(-50%) rotate(90deg);
+    transform: translateX(-50%) rotate(-90deg);
 }
 
 .east ul {
@@ -229,36 +381,51 @@
 .east .discard li {
     position: absolute;
     width: 12%;
+    transform: rotate(90deg);
 }
 
 .east .discard li:nth-child(1) {
-    top: 35%;
-    left: 16%;
-    transform: rotate(-90deg);
+    top: -3%;
+    left: 72%;
 }
 
 .east .discard li:nth-child(2) {
     top: 16%;
-    left: 13%;
-    transform: rotate(-90deg);
+    left: 75%;
 }
 
 .east .discard li:nth-child(3) {
-    top: -3%;
-    left: 10%;
-    transform: rotate(-90deg);
+    top: 35%;
+    left: 78%;
 }
 
 .east .hand li:hover {
-    transform: translateY(10px);
+    transform: translateY(-10px);
     z-index: 100;
 }
 
 .east .discard li:hover {
-    transform: rotate(-90deg) scale(1.5);
+    transform: rotate(90deg) scale(1.5);
     z-index: 100;
 }
 
+.west .info, .east .info {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    top: -15%;
+}
+
+.west .info span, .east .info span {
+    width: 20%;
+    font-weight: bold;
+}
+
+.west .info .active, .east .info .active {
+    color: red;
+}
 
 /* deck */
 .deck {
