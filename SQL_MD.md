@@ -1,4 +1,4 @@
-## Tables in the Database
+# Tables in the Database
 
 1. ActiveSessions
 2. PlayerRosters
@@ -6,7 +6,7 @@
 
 ---
 
-### 1. ActiveSessions
+## Table 1: ActiveSessions
 
 **Table Description:** Each record of the table refers to a user created game session. This table will be viewable from the 'Session' page of the site, allowing users to reference which game to try and join.
 
@@ -27,9 +27,9 @@
 
 - One-to-many relationship with the `PlayerRosters` table. One `ActiveSessions` record can be associated with multiple `PlayerRosters` records.
 
-## Data Access Methods
+### Data Access Methods
 
-### 1. CreateGameSession
+#### 1. CreateGameSession
 
 **Description:** This method creates a new game session and adds it to the ActiveSessions table.
 
@@ -37,7 +37,7 @@
 
 **Return Values:** RoomID of the new game session.
 
-### 2. JoinGameSession
+#### 2. JoinGameSession
 
 **Description:** This method allows a user to join an existing game session.
 
@@ -45,9 +45,9 @@
 
 **Return Values:** Success message if the player was added to the game session, error message if the game session is full.
 
-## Tests
+### Tests For Data Access Methods
 
-### Test 1: Create New Game Session
+#### Test 1: Create New Game Session
 
 **Description:** Test session creation
 
@@ -70,7 +70,7 @@
 - The host name and descriptive title provided are input into the new table record as HostName and RoomTitle values, respectively.
 - A new record is added to the PlayerRoster table, and the same RoomID is used as well as the same name is used for Player1.
 
-### Test 2: Fail Create Game Session
+#### Test 2: Fail Create Game Session
 
 **Description:** Refuse to create a new game when fields are not filled.
 
@@ -86,13 +86,13 @@
 
 **Postconditions:** Text will generate within the 'create game' box to inform the user of the need to include the required fields.
 
-## Pages Accessing the Database
+### Pages Accessing the Database
 
 - Session Page: This page will access the `ActiveSessions` table to display all active game sessions. It will use the `CreateGameSession` and `JoinGameSession` methods to create and join game sessions.
 
-## Page Tests
+### Page Tests
 
-### Test 1: Session Page Displays Correct Data
+#### Test 1: Session Page Displays Correct Data
 
 **Description:** Test that the session page displays the correct data from the `ActiveSessions` table.
 
@@ -110,13 +110,13 @@
 
 ---
 
-### 2. PlayerRosters
+## Table 2: PlayerRosters
 
-**Table Description:** Each record of the table refers to a player in a game session. This table will be updated when a new player joins a game session.
+**Table Description:** When a user enters a room id and provides a player name to join a game, it will be added to this table, along with the associated room id. This will be used to distringuish which user is in what player slot, and will be associated to the Players field in the ActiveSessions table. A game's player names are visible in a game session. 
 
 **Fields:**
 
-- `RoomID`: Short code representing game session. This will be created by the web application. This is the primary key.
+- `RoomID`: Short code representing game session. This will be created by the web application. This is the primary key to associate a particular session in the `ActiveSessions` table.
 - `Player1`: Name of the first player in the game session. This field cannot be null.
 - `Player2`: Name of the second player in the game session. This field can be null if there are less than two players.
 - `Player3`: Name of the third player in the game session. This field can be null if there are less than three players.
@@ -132,9 +132,9 @@
 
 - One-to-one relationship with the `ActiveSessions` table. One `PlayerRosters` record is associated with one `ActiveSessions` record.
 
-## Data Access Methods
+### Data Access Methods
 
-### 1. AddPlayer
+#### 1. AddPlayer
 
 **Description:** This method adds a new player to an existing game session.
 
@@ -142,9 +142,9 @@
 
 **Return Values:** Success message if the player was added to the game session, error message if the game session is full or has already started.
 
-## Tests
+### Tests For Data Access Methods
 
-### Test 1: Add More Players to Existing Game
+#### Test 1: Add More Players to Existing Game
 
 **Description:** Validate that additional users can join a game
 
@@ -152,7 +152,7 @@
 
 **Test Steps:**
 1. User loads the session page, which presents an active game.
-2. The RoomID and a player name are entered the required textbox of the 'join a game' box.
+2. The RoomID and a player name are entered in the required textbox of the 'join a game' box.
 3. The button to join game is selected.
 
 **Expected Result:** The user will be a player in the same game as the host.
@@ -164,7 +164,7 @@
 - The player name provided is assigned to the user's player name.
 - The player name is added into the next available field in the corresponding record in the PlayerRosters table.
 
-### Test 2: Fail Add Player Room Full
+#### Test 2: Fail Add Player Room Full
 
 **Description:** Refuse to add a player to a game session with no available room.
 
@@ -181,7 +181,7 @@
 
 **Postconditions:** Text will generate within the 'join a game' box to inform the user that 'This room cannot be entered'.
 
-### Test 3: Fail Add Player Game Started
+#### Test 3: Fail Add Player Game Started
 
 **Description:** Refuse to add a player to a game session which has begun play.
 
@@ -198,7 +198,7 @@
 
 **Postconditions:** Text will generate within the 'join a game' box to inform the user that 'This room cannot be entered'.
 
-### Test 4: Fail Add Player No Information
+#### Test 4: Fail Add Player No Information
 
 **Description:** Refuse to add a player to a game session without player name and RoomID.
 
@@ -215,7 +215,7 @@
 
 **Postconditions:** Text will generate within the 'join a game' box to inform the user of the need to include the required fields.
 
-### Test 5: Fail Add Player Not Active Room
+#### Test 5: Fail Add Player Not Active Room
 
 **Description:** Refuse to add a player to a game session when the provided RoomID is not within the ActiveSessions table.
 
@@ -232,13 +232,13 @@
 
 **Postconditions:** Text will generate within the 'join a game' box to inform the user that 'This room cannot be entered'.
 
-## Pages Accessing the Database
+### Pages Accessing the Database
 
 - Session Page: This page will access the `PlayerRosters` table to display all players in a game session. It will use the `AddPlayer` method to add players to a game session.
 
-## Page Tests
+### Page Tests
 
-### Test 1: Session Page Displays Correct Data
+#### Test 1: Session Page Displays Correct Data
 
 **Description:** Test that the session page displays the correct data from the `PlayerRosters` table.
 
@@ -256,7 +256,7 @@
 
 ---
 
-### 3. GameHistory
+## Table 3: GameHistory
 
 **Table Description:**
 Once a winner is declared in a game, the game's session will be considered "completed". A copy of the record from 'ActiveSessions' will be stored here, and will be made viewable to users from the 'Session' page of the site - positioned somewhat below the table of 'ActiveSessions'. This table will allow users to observe the play history of the site, and the winner of a particular game.
@@ -269,15 +269,31 @@ Once a winner is declared in a game, the game's session will be considered "comp
 - `Players`: Number of active players in game session. Max of four.
 - `Winner`: This field will be added to the information provided by the record coming from the 'ActiveSessions' table. Only when a game is completed and victory is awarded will a name be presented here. Otherwise, it will indicate that there was not a winner.
 
-**Functions**
+**Constraints:**
 
-- `Copy ActiveSessions Record`: Once a game is completed, the record in ActiveSessions and the player name of the winner should be used to generate a new record in GameHistory.
+- `RoomID` must be unique.
+- `Player1` cannot be null.
+- `Player2`, `Player3`, and `Player4` can be null.
 
-## Tests
+**Relationships:**
 
-### Test 1: Completed Game Joins History
+- Many-to-one relationship with the `ActiveSessions` table and `PlayerRosters`. Session information comes from `ActiveSessions`, while the game winner comes from the `PlayerRosters` table.
 
-**Description:** A new GameHistory record is produced from a completed game
+### Data Access Methods
+
+#### 1. AddGameRecord
+
+**Description:** Once a game is completed, the record in ActiveSessions and the player name of the winner should be used to generate a new record in GameHistory.
+
+**Parameters:** RoomID, PlayerName
+
+**Return Values:** Success message if the player was added to the game session, error message if the game session is full or has already started.
+
+### Tests For Data Access Methods
+
+#### Test 1: Completed Game Joins History
+
+**Description:** A new GameHistory record is produced from a completed game.
 
 **Preconditions:** A game with at least two players has a winner declared.
 
@@ -285,13 +301,13 @@ Once a winner is declared in a game, the game's session will be considered "comp
 1. Two or more players create/join a game.
 2. The game is completed, and a winner is declared by the outcome.
 
-**Expected Result:** A row in the GameHistory Table with correct information will be presented.
+**Expected Result:** A row in the GameHistory Table with correct information will be added.
 
 **Status:** Pass
 
 **Postconditions:** Viewing the session page will include a new row at the top of the printed table. The values included in the new row will match what was available from ActiveSessions. There will also be a field for the winner of the completed game, and the value listed will match the provided player name from the game session.
 
-### Test 2: Fail Join History Incomplete Game
+#### Test 2: Fail Join History Incomplete Game
 
 **Description:** An active game session fails to complete, and is not added to GameHistory table.
 
@@ -306,3 +322,25 @@ Once a winner is declared in a game, the game's session will be considered "comp
 **Status:** Fail
 
 **Postconditions:** Viewing the session page will not include the new row at the top of the printed table. Entering the RoomID in the 'join a game' box will result in the same denial as a not active room.
+
+### Pages Accessing the Database
+
+- Session Page: This page will access the `GameHistory` table to display result from completed games.
+
+### Page Tests
+
+#### Test 1: Session Page Displays Correct Data in GameHistory table
+
+**Description:** Test that the session page displays the correct data from the `GameHistory` table.
+
+**Preconditions:** The `GameHistory` table has at least one record.
+
+**Test Steps:**
+1. Navigate to the session page.
+2. Verify rows in the GameHistory are displayed on the page.
+
+**Expected Result:** All completed games in the `GameHistory` table are displayed on the session page.
+
+**Status:** Pass
+
+**Postconditions:** The session page displays the correct data from the `GameHistory` table.
