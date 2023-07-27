@@ -25,7 +25,8 @@
 
 **Relationships:**
 
-- One-to-many relationship with the `PlayerRosters` table. One `ActiveSessions` record can be associated with multiple `PlayerRosters` records.
+- One-to-one relationship with the `PlayerRosters` table. One `PlayerRosters` record is associated with one `ActiveSessions` record.
+
 
 ### Data Access Methods
 
