@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Letter Game</title>
+    <link rel="stylesheet" href="2players.css">
+</head>
+<body>
+    <div class="game_container hidden">
+        <div class="north hidden">
+            <div class="player_area">
+                <div class="hand_area">
+                    <h3 class="hidden">North Player's Hand</h3>
+                    <ul class="hand"></ul>
+                </div>
+                <div class="discard_area">
+                    <h3 class="hidden">Discard Pile</h3>
+                    <ul class="discard"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="deck hidden">
+            <button id="drawButton">Draw Card</button>
+        </div>
+
+        <div class="south hidden">
+            <div class="player_area">
+                <div class="hand_area">
+                    <h3 class="hidden">South Player's Hand</h3>
+                    <ul class="hand"></ul>
+                </div>
+                <div class="discard_area">
+                    <h3 class="hidden">Discard Pile</h3>
+                    <ul class="discard"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="removed hidden">
+        <h2 class="hidden">Out of Play</h2>
+        <ul class="cards"></ul>
+    </div>
+    <script src="2players.js"></script>
+</body>
+</html>
+
+
