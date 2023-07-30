@@ -42,7 +42,7 @@ I have been introducing game asset files and images to be used on our webpages. 
 
 Collin Coakley
 
-
+For my contribution, I added some features to the HTML for our site, including linking pages and updating the navigation bar. I also began researching the pros/cons of Ably and PubNub to see which would be better for our project to enable multiplier functionality of our game. I began learning JavaScript and creating pseudocode for the JavaScript implementation of the game logic for our project. Next week, I plan on continuing to learn JavaScript, add content and formatting to our HTML pages, and work on the next project milestone.
 
 <br>
 
