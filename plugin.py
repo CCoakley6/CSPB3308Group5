@@ -34,7 +34,52 @@ def make_GameHistory(RoomID, Winner):
                 FROM ActiveSessions
                 LEFT JOIN PlayerRosters
                 ON ActiveSessions.RoomID=PlayerRosters.RoomID
-                WHERE RoomID=''' +RoomID+ '''
+                WHERE RoomID=''' +RoomID+ ''';
                 ''')
+    connection.commit()
+    connection.close()
+
+
+def update_PlayerRosters(RoomID, PlayerName):
+    '''update the record of players for a given session.'''
+    connection = create_connection()
+    cur = connection.cursor()
+    cur.execute('''
+                SELECT Players
+                FROM ActiveSessions
+                WHERE RoomID=''' +RoomID+ ''';
+                ''')
+    
+    result = cur.fetchall()
+    if result[0] < 4:
+        cur.execute('''
+                    UPDATE ActiveSessions
+                    SET Players=Players+1 
+                    WHERE RoomID=''' +RoomID+ ''';
+                    ''')
+        if result[0] == 0:
+            cur.execute('''
+                        UPDATE PlayerRosters
+                        SET Player1=''' +PlayerName+ ''' 
+                        WHERE RoomID=''' +RoomID+ ''';
+                        ''')
+        else if result[0] == 1:
+            cur.execute('''
+                        UPDATE PlayerRosters
+                        SET Player2=''' +PlayerName+ ''' 
+                        WHERE RoomID=''' +RoomID+ ''';
+                        ''')
+        else if result[0] == 2:
+            cur.execute('''
+                        UPDATE PlayerRosters
+                        SET Player3=''' +PlayerName+ ''' 
+                        WHERE RoomID=''' +RoomID+ ''';
+                        ''')
+        else:
+            cur.execute('''
+                        UPDATE PlayerRosters
+                        SET Player4=''' +PlayerName+ ''' 
+                        WHERE RoomID=''' +RoomID+ ''';
+                        ''')
     connection.commit()
     connection.close()
