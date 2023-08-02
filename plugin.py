@@ -41,7 +41,8 @@ def make_GameHistory(RoomID, Winner):
 
 
 def update_PlayerRosters(RoomID, PlayerName):
-    '''update the record of players for a given session.'''
+    '''update the field of players for a given session, and 
+    update names within a roster.'''
     connection = create_connection()
     cur = connection.cursor()
     cur.execute('''
@@ -50,7 +51,7 @@ def update_PlayerRosters(RoomID, PlayerName):
                 WHERE RoomID=''' +RoomID+ ''';
                 ''')
     
-    result = cur.fetchall()
+    result = cur.fetchone()
     if result[0] < 4:
         cur.execute('''
                     UPDATE ActiveSessions
@@ -83,3 +84,19 @@ def update_PlayerRosters(RoomID, PlayerName):
                         ''')
     connection.commit()
     connection.close()
+
+
+def make_ActiveSession(HostName, RoomTitle):
+    '''generate a new record in ActiveSessions table. HostName 
+    and Roomtitle arguments must be strings.'''
+    RoomID = make_RoomID(HostName)
+    connection = create_connection()
+    cur = connection.cursor()
+    cur.execute('''
+                INSERT INTO ActiveSessions (RoomID, RoomTitle, HostName, Players)
+                VALUES (''' +RoomID+ ''', ''' +RoomTitle+ ''', ''' +HostName+ ''', 0 );
+                ''')    
+    connection.commit()
+    connection.close()
+    update_PlayerRosters(RoomID, HostName)
+    
