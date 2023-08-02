@@ -48,6 +48,6 @@ For my contribution, I added some features to the HTML for our site, including l
 
 Roman Di Domizio
 
-
+I had spent a good chunk of my time learning HTML, CSS, and JavaScript. Then I begun adding to the session listings page and started trying to figure out how to set up the game logic.
 
 <br>
