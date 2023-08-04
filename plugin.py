@@ -52,7 +52,7 @@ def update_PlayerRosters(RoomID, PlayerName):
                 ''')
     
     result = cur.fetchone()
-    if result[0] < 4:
+    if result[0] != None & result[0] < 4:
         cur.execute('''
                     UPDATE ActiveSessions
                     SET Players=Players+1 
@@ -99,4 +99,41 @@ def make_ActiveSession(HostName, RoomTitle):
     connection.commit()
     connection.close()
     update_PlayerRosters(RoomID, HostName)
+
+
+def search_RoomID(RoomID):
+    '''search the ActiveSessions table and verify one with the 
+    entered RoomID exists. If room does not exist, do not redirect.'''
+    room_exists = False
+    connection = create_connection()
+    cur = connection.cursor()
+    cur.execute('''
+                SELECT RoomID
+                FROM ActiveSessions
+                WHERE RoomID=''' +RoomID+ ''';
+                ''')
     
+    result = cur.fetchone()
+    connection.close()
+    if result[0] != None & result[0] == RoomID:
+        room_exists = True
+    return room_exists
+
+
+def check_Players(RoomID):
+    '''search the ActiveSessions table and verify that the room is
+    not currently full.'''
+    has_room = False
+    connection = create_connection()
+    cur = connection.cursor()
+    cur.execute('''
+                SELECT Players
+                FROM ActiveSessions
+                WHERE RoomID=''' +RoomID+ ''';
+                ''')
+    
+    result = cur.fetchone()
+    connection.close()
+    if result[0] != None & result[0] < 4:
+        has_room = True
+    return has_room
