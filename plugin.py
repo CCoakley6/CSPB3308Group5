@@ -79,7 +79,7 @@ def update_PlayerRosters(RoomID, PlayerName):
                 ''')
     
     result = cur.fetchone()
-    if result != None & result[0] < 4:
+    if result & result[0] < 4:
         cur.execute('''
                     UPDATE ActiveSessions
                     SET Players=Players+1 
@@ -147,7 +147,7 @@ def search_RoomID(RoomID):
     
     result = cur.fetchone()
     connection.close()
-    if result != None & result[0] == RoomID:
+    if result & result[0] == RoomID:
         room_exists = True
     return room_exists
 
@@ -166,7 +166,7 @@ def check_Players(RoomID):
     
     result = cur.fetchone()
     connection.close()
-    if result != None & result[0] < 4:
+    if result & result[0] < 4:
         has_room = True
     return has_room
 
