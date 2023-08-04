@@ -25,11 +25,11 @@ def Initialize_Tables():
                 ''')
     cur.execute('''
                 CREATE TABLE IF NOT EXISTS PlayerRosters(
-                RoomID int, Player1 varchar(255), Player2 varchar(255), Player3 varchar(255), Player4 varchar(255))
+                RoomID int, Player1 varchar(255), Player2 varchar(255), Player3 varchar(255), Player4 varchar(255));
                 ''')
     cur.execute('''
                 CREATE TABLE IF NOT EXISTS GameHistory(
-                RoomID int, RoomTitle varchar(255), HostName varchar(255), Players int, Winner varchar(255))
+                RoomID int, RoomTitle varchar(255), HostName varchar(255), Players int, Winner varchar(255));
                 ''')
     connection.commit()
     connection.close()
@@ -69,6 +69,7 @@ def make_GameHistory(RoomID, Winner):
 def update_PlayerRosters(RoomID, PlayerName):
     '''update the field of players for a given session, and 
     update names within a roster.'''
+    success = False
     connection = create_connection()
     cur = connection.cursor()
     cur.execute('''
@@ -90,26 +91,31 @@ def update_PlayerRosters(RoomID, PlayerName):
                         SET Player1=''' +PlayerName+ ''' 
                         WHERE RoomID=''' +RoomID+ ''';
                         ''')
+            success = True
         else if result[0] == 1:
             cur.execute('''
                         UPDATE PlayerRosters
                         SET Player2=''' +PlayerName+ ''' 
                         WHERE RoomID=''' +RoomID+ ''';
                         ''')
+            success = True
         else if result[0] == 2:
             cur.execute('''
                         UPDATE PlayerRosters
                         SET Player3=''' +PlayerName+ ''' 
                         WHERE RoomID=''' +RoomID+ ''';
                         ''')
+            success = True
         else:
             cur.execute('''
                         UPDATE PlayerRosters
                         SET Player4=''' +PlayerName+ ''' 
                         WHERE RoomID=''' +RoomID+ ''';
                         ''')
+            success = True
     connection.commit()
     connection.close()
+    return success
 
 
 def make_ActiveSession(HostName, RoomTitle):
@@ -163,3 +169,5 @@ def check_Players(RoomID):
     if result != None & result[0] < 4:
         has_room = True
     return has_room
+
+
