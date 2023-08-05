@@ -1,0 +1,15 @@
+-Project overview (title, introduce group members, project idea/vision)
+-Live demo of website and game (to extent possible)
+-Recorded demo of game
+-Discussion about the methodology used in our project (Agile, SCRUM, Code Editors used since Jupyter sucks)
+-Trello
+-Github
+-HTML page creation/revision
+-Javascript
+-SQL databases (postgresql and pgadmin) - Collin
+-Testing with Flask
+-Deploying on Render
+-Issues we encountered and how we dealt with them/changed our plans (maybe everyone talks about this)
+-Analysis/Reflection of project 
+
+
