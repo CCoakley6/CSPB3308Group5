@@ -109,8 +109,7 @@ def generateRoomID(length = 8):
     characters = string.ascii_letters + string.digits
     room_id = ''.join(random.choice(characters) for _ in range(length))
     return room_id
-
-def listAvaibleRooms():
+def listAvailableRooms():
     connection = create_connection()
     cur = connection.cursor()
     cur.execute('SELECT * FROM ActiveSessions')
@@ -128,6 +127,7 @@ def listAvaibleRooms():
             if len(players) < activeSessions[i][-1]:
                 listAvailableRooms.append({
                     "roomID": activeSessions[i][0],
+                    "roomTitle": activeSessions[i][1],
                     "hostName": activeSessions[i][2],
                     "numPlayers": activeSessions[i][3],
                     "activeNums": len(players)
@@ -151,7 +151,6 @@ def listHistory():
         record = cur.fetchone()
         if record is not None:
             players = [item for item in record if item]
-
             listHistoryRecord.append({
                 "roomID": history[i][0],
                 "hostName": history[i][2],
@@ -241,8 +240,8 @@ def gameSession():
                 players = [item for item in record if item is not None]
 
             if len(players) == numPlayers:
-                showAvaibleRooms = listAvaibleRooms()
-                return render_template("sessionPage.html", message = "Sorry, The room is full!", data = showAvaibleRooms)
+                showAvailableRooms = listAvailableRooms()
+                return render_template("sessionPage.html", message = "Sorry, The room is full!", data = showAvailableRooms)
             
             for i in range(1, numPlayers):
                 if record[i] == None:
