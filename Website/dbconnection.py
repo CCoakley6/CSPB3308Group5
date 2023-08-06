@@ -19,13 +19,13 @@ db_password = os.environ.get("DB_PASSWORD")
             # password=db_password
 def create_connection():
     try:
-        connection = psycopg2.connect(
-            host=db_host,
-            port=db_port,
-            dbname=db_name,
-            user=db_user,
-            password=db_password
-        )
+        connection = psycopg2.connect( "postgres://donutchampdb_user:KEVzKVFErrnIuUdDTtWSfJNibGJcN8Vr@dpg-cj7eof5jeehc73diu540-a/donutchampdb" ) # db link for render
+#            host=db_host,
+#            port=db_port,
+#            dbname=db_name,
+#            user=db_user,
+#            password=db_password
+#        )
         return connection
     except Exception as e:
         print("Error connecting to the database:", e)
