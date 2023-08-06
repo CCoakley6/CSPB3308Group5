@@ -2,9 +2,9 @@
 -Live demo of website and game (to extent possible)
 -Recorded demo of game
 -Discussion about the methodology used in our project (Agile, SCRUM, Code Editors used since Jupyter sucks)
--Trello
--Github
--HTML page creation/revision
+-Trello - HARPER
+-Github - HARPER
+-HTML page creation/revision - HARPER
 -Javascript
 -SQL databases (postgresql and pgadmin) - Collin
 -Testing with Flask
