@@ -150,14 +150,14 @@ def listHistory():
         ''', (history[i][0],))
         record = cur.fetchone()
         if record is not None:
-            players = [item for item in record if item is not None]
-            if len(players) < history[i][-1]:
-                listHistoryRecord.append({
-                    "roomID": history[i][0],
-                    "hostName": history[i][2],
-                    "numPlayers": history[i][3],
-                    "winner": history[i][4]
-                })
+            players = [item for item in record if item]
+
+            listHistoryRecord.append({
+                "roomID": history[i][0],
+                "hostName": history[i][2],
+                "numPlayers": history[i][3],
+                "winner": history[i][4]
+            })
     connection.commit()
     connection.close()
     return listHistoryRecord
