@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .game_container {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background-image: url("images/bg/flat_background0.png");
+        }
+
+        .south {
+            position: absolute;
+            width: 55%;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
+
+        .south ul {
+            list-style: none;
+        }
+
+        .south .hand {
+            display: flex;
+            width: 50%;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .south .hand li {
+            width: 35%;
+            margin: 0 10px;
+        }
+
+        .south .hand li img,
+        .south .discard li img {
+            width: 100%;
+        }
+
+        .south .discard li {
+            position: absolute;
+            width: 12%;
+        }
+
+        .south .discard li:nth-child(1) {
+            top: 4%;
+            right: 12%;
+        }
+
+        .south .discard li:nth-child(2) {
+            top: 18%;
+            right: 8%;
+        }
+
+        .south .discard li:nth-child(3) {
+            top: 32%;
+            right: 4%;
+        }
+
+        .south .hand li:hover {
+            transform: translateY(-10px);
+            z-index: 100;
+        }
+
+        .south .discard li:hover {
+            transform: scale(1.5);
+            z-index: 100;
+        }
+
+        /* player 2 */
+
+        .north {
+            position: absolute;
+            width: 55%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .north ul {
+            list-style: none;
+        }
+
+        .north .hand {
+            display: flex;
+            width: 50%;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .north .hand li {
+            width: 35%;
+            margin: 0 10px;
+        }
+
+        .north .hand li img,
+        .north .discard li img {
+            width: 100%;
+        }
+
+        .north .discard li {
+            position: absolute;
+            width: 12%;
+        }
+
+        .north .discard li:nth-child(1) {
+            top: 3%;
+            left: 4%;
+        }
+
+        .north .discard li:nth-child(2) {
+            top: 18%;
+            left: 8%;
+        }
+
+        .north .discard li:nth-child(3) {
+            top: 30%;
+            left: 12%;
+        }
+
+        .north .hand li:hover {
+            transform: translateY(10px);
+            z-index: 100;
+        }
+
+        .north .discard li:hover {
+            transform: scale(1.5);
+            z-index: 100;
+        }
+
+        /* player 3 */
+        .west {
+            position: absolute;
+            width: 55%;
+            top: 33%;
+            left: -20.5%;
+            transform: rotate(-90deg);
+        }
+
+        .west ul {
+            list-style: none;
+        }
+
+        .west .hand {
+            display: flex;
+            width: 50%;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .west .hand li {
+            width: 35%;
+            margin: 0 10px;
+        }
+
+        .west .hand li img,
+        .west .discard li img {
+            width: 100%;
+        }
+
+        .west .discard li {
+            position: absolute;
+            width: 12%;
+        }
+
+        .west .discard li:nth-child(1) {
+            top: -4%;
+            left: 9%;
+            transform: rotate(90deg);
+        }
+
+        .west .discard li:nth-child(2) {
+            top: 15%;
+            left: 12%;
+            transform: rotate(90deg);
+        }
+
+        .west .discard li:nth-child(3) {
+            top: 34%;
+            left: 15%;
+            transform: rotate(90deg);
+        }
+
+        .west .hand li:hover {
+            transform: translateY(10px);
+            z-index: 100;
+        }
+
+        .west .discard li:hover {
+            transform: rotate(90deg) scale(1.5);
+            z-index: 100;
+        }
+
+
+        /* player_4  */
+        .east {
+            position: absolute;
+            width: 55%;
+            top: 36%;
+            left: 93%;
+            transform: translateX(-50%) rotate(90deg);
+        }
+
+        .east ul {
+            list-style: none;
+        }
+
+        .east .hand {
+            display: flex;
+            width: 50%;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .east .hand li {
+            width: 35%;
+            margin: 0 10px;
+        }
+
+        .east .hand li img,
+        .east .discard li img {
+            width: 100%;
+        }
+
+        .east .discard li {
+            position: absolute;
+            width: 12%;
+        }
+
+        .east .discard li:nth-child(1) {
+            top: 35%;
+            left: 16%;
+            transform: rotate(-90deg);
+        }
+
+        .east .discard li:nth-child(2) {
+            top: 16%;
+            left: 13%;
+            transform: rotate(-90deg);
+        }
+
+        .east .discard li:nth-child(3) {
+            top: -3%;
+            left: 10%;
+            transform: rotate(-90deg);
+        }
+
+        .east .hand li:hover {
+            transform: translateY(10px);
+            z-index: 100;
+        }
+
+        .east .discard li:hover {
+            transform: rotate(-90deg) scale(1.5);
+            z-index: 100;
+        }
+
+
+        /* deck */
+        .deck {
+            position: absolute;
+            width: 8%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .deck img {
+            width: 100%;
+            transform: rotate(-90deg);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="game_container">
+        <div class="south">
+            <ul class="discard">
+                <li><img src="images/card/card_face1.png" alt=""></li>
+                <li><img src="images/card/card_face2.png" alt=""></li>
+                <li><img src="images/card/card_face3.png" alt=""></li>
+            </ul>
+            <ul class="hand">
+                <li><img src="images/card/card_face1.png" alt=""></li>
+                <li><img src="images/card/card_face1.png" alt=""></li>
+            </ul>
+        </div>
+
+        <div class="north">
+            <ul class="discard">
+                <li><img src="images/card/card_face1.png" alt=""></li>
+                <li><img src="images/card/card_face2.png" alt=""></li>
+                <li><img src="images/card/card_face3.png" alt=""></li>
+            </ul>
+            <ul class="hand">
+                <li><img src="images/card/card_face0.png" alt=""></li>
+                <li><img src="images/card/card_face0.png" alt=""></li>
+            </ul>
+        </div>
+
+        <div class="west">
+            <ul class="discard">
+                <li><img src="images/card/card_face1.png" alt=""></li>
+                <li><img src="images/card/card_face2.png" alt=""></li>
+                <li><img src="images/card/card_face3.png" alt=""></li>
+            </ul>
+            <ul class="hand">
+                <li><img src="images/card/card_face0.png" alt=""></li>
+                <li><img src="images/card/card_face0.png" alt=""></li>
+            </ul>
+        </div>
+
+        <div class="east">
+            <ul class="discard">
+                <li><img src="images/card/card_face1.png" alt=""></li>
+                <li><img src="images/card/card_face2.png" alt=""></li>
+                <li><img src="images/card/card_face3.png" alt=""></li>
+            </ul>
+            <ul class="hand">
+                <li><img src="images/card/card_face0.png" alt=""></li>
+                <li><img src="images/card/card_face0.png" alt=""></li>
+            </ul>
+        </div>
+
+        <div class="deck">
+            <img src="images/card/card_face0.png" alt="">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/sessionPage.css')}}" />
+    <title>Create/Join Game Session</title>
+</head>
+
+<body>
+    <div class="container py-5" style="width: 60%;">
+        <h1 class="text-center mb-5">Create/Join Game Session</h1>
+        <div class="row justify-content-center">
+            <div class="col-sm-5 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Create a New Game</h2>
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="player-name" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="player-name" name="name"
+                                    placeholder="Enter your name" required>
+                                <label for="numPlayers" class="form-label">Number of Players</label>
+                                <select class="form-control" id="numPlayers" name="mySelect">
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary d-block mx-auto">Create Game</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Join an Existing Game</h2>
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="player-name" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="player-name" name="name"
+                                    placeholder="Enter your name" required>
+                                <label for="joinGameCode" class="form-label">Game Code</label>
+                                <input type="text" class="form-control" id="joinGameCode" name="room-id"
+                                    placeholder="Enter game code" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary d-block mx-auto">Join Game</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-secondary d-block mx-auto mt-3 col-sm-10" id="toggleBtn">View Existing Game
+                Sessions</button>
+
+            <table style="display: none;" id="showTable">
+                {% if data %}
+                <tr>
+                    <th>Room ID</th>
+                    <th>Host Name</th>
+                    <th>Players</th>
+                </tr>
+                {% endif %}
+
+                {% for item in data %}
+                <tr>
+                    <td>{{item.roomID}}</td>
+                    <td>{{item.hostName}}</td>
+                    <td>{{item.activeNums}} / {{item.numPlayers}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div id="message" style="text-align: center; width: 70%;">
+                {% if message %}
+                <h3> {{ message}}</h3>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        var toggleBtn = document.getElementById("toggleBtn")
+        var displayTable = document.getElementById("showTable")
+        var flag = true
+        toggleBtn.onclick = function () {
+            if (flag) {
+                flag = false;
+                displayTable.style.display = 'table';
+                toggleBtn.innerText = "Hide Existing Game Sessions";
+            } else {
+                flag = true;
+                displayTable.style.display = 'none';
+                toggleBtn.innerText = "View Existing Game Sessions";
+            }
+
+        }
+
+        const message = document.getElementById('message');
+
+        function hideMessage() {
+            message.style.display = 'none';
+        }
+
+        setTimeout(hideMessage, 1000);
+    </script>
+</body>
+
+</html>

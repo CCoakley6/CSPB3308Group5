@@ -1,0 +1,11 @@
+SPECIFICATIONS
+##############
+blue color: 45f8ff
+blue accent: 2a8d96
+pink color: fb1fb5
+pink accent: 943270
+yellow color: ffc845
+
+font type: Arial Rounded Bold
+
+

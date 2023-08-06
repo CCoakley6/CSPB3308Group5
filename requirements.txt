@@ -1,5 +1,0 @@
-dbconnection
-flask
-flask_socketio
-psycopg2
-python-dotenv
