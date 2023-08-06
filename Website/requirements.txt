@@ -1,5 +1,6 @@
 dbconnection
 flask
+Gunicorn
 flask_socketio
 psycopg2
 python-dotenv
