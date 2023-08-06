@@ -5,10 +5,10 @@
 -Trello - HARPER
 -Github - HARPER
 -HTML page creation/revision - HARPER
--Javascript
+-Javascript - Shibo 
 -SQL databases (postgresql and pgadmin) - Collin
 -Testing with Flask
--Deploying on Render
+-Deploying on Render - Shibo
 -Issues we encountered and how we dealt with them/changed our plans (maybe everyone talks about this)
 -Analysis/Reflection of project 
 
