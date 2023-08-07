@@ -1,7 +1,7 @@
 -Project overview (title, introduce group members, project idea/vision) - Dean
 -Live demo of website and game (to extent possible)
 -Recorded demo of game
--Discussion about the methodology used in our project (Agile, SCRUM, Code Editors used since Jupyter sucks)
+-Discussion about the methodology used in our project (Agile, SCRUM, Code Editors used since Jupyter sucks) -Collin
 -Trello - HARPER
 -Github - HARPER
 -HTML page creation/revision - HARPER
