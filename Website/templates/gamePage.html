@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='css/gamePage.css')}}" />
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
     <title> {{ data.roomTitle }}</title>
 </head>
@@ -201,7 +202,7 @@
             hand.removeEventListener("dblclick", playCard);
             for (var i = 0; i < player.hand.length; i++) {
                 cardsInHand +=
-                    `<li><img src="/static/images/card_face${player.hand[i].value}.png" alt=""></li>`;
+                    `<li><img src="/static/images/card_face${direction == "south" ? player.hand[i].value: 0}.png" alt=""></li>`;
             }
             hand.innerHTML = cardsInHand;
             hand.addEventListener("dblclick", function (event) {

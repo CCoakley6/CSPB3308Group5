@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from dbconnection import create_connection
 import random
@@ -109,6 +109,7 @@ def generateRoomID(length = 8):
     characters = string.ascii_letters + string.digits
     room_id = ''.join(random.choice(characters) for _ in range(length))
     return room_id
+
 def listAvailableRooms():
     connection = create_connection()
     cur = connection.cursor()
@@ -132,6 +133,7 @@ def listAvailableRooms():
                     "numPlayers": activeSessions[i][3],
                     "activeNums": len(players)
                 })
+
     connection.commit()
     connection.close()
     return listAvailableRooms
@@ -139,27 +141,136 @@ def listAvailableRooms():
 def listHistory():
     connection = create_connection()
     cur = connection.cursor()
-    cur.execute('SELECT * FROM GameHistory')
-    history = cur.fetchall()
 
-    listHistoryRecord = []
+    cur.execute('''
+    SELECT * FROM GameHistory
+    WHERE WINNER IS NOT NULL
+    ''')
 
-    for i in range(len(history)):
-        cur.execute('''
-        SELECT RoomID, RoomTitle, HostName, Players, Winner FROM GameHistory WHERE RoomID = %s
-        ''', (history[i][0],))
-        record = cur.fetchone()
-        if record is not None:
-            players = [item for item in record if item]
-            listHistoryRecord.append({
-                "roomID": history[i][0],
-                "hostName": history[i][2],
-                "numPlayers": history[i][3],
-                "winner": history[i][4]
-            })
+    listHistoryRecords = cur.fetchall()
+
     connection.commit()
     connection.close()
-    return listHistoryRecord
+    return listHistoryRecords
+
+def addPlayer(roomID, playerName):
+    player = {
+        "playerID": str(uuid.uuid4()),
+        "name": playerName,
+        "roomID": roomID,
+        "readyStatus": False,
+        "hand": [],
+        "discard": [],
+        "token": 0,
+        "isHost": False,
+        "isMyTurn": False,
+        "outOfRound": False,
+        "invincible": False
+    }
+    return player
+
+def createGameSession(roomTitle, hostName, numPlayers):
+    connection = create_connection()
+    roomID = generateRoomID()
+    cur = connection.cursor()
+
+    sessionRecord = '''
+        INSERT INTO ActiveSessions(RoomID, RoomTitle, HostName, Players)
+        VALUES (%s, %s, %s, %s)
+    '''
+    data = (roomID, roomTitle, hostName, numPlayers)
+    cur.execute(sessionRecord, data)
+
+    gameHistoryRecord = '''
+        INSERT INTO GameHistory(RoomID, RoomTitle, HostName, Players)
+        VALUES (%s, %s, %s, %s)
+    '''
+    data = (roomID, roomTitle, hostName, numPlayers)
+    cur.execute(gameHistoryRecord, data)
+
+    playerRecord = '''
+    INSERT INTO PlayerRosters (RoomID, Player1)
+    VALUES (%s, %s)
+    '''
+    player = {
+        "playerID": str(uuid.uuid4()),
+        "name": hostName,
+        "roomID": roomID,
+        "readyStatus": True,
+        "hand": [],
+        "discard": [],
+        "token": 0,
+        "isHost": True,
+        "isMyTurn": False,
+        "outOfRound": False,
+        "invincible": False,
+        "gameStatus": False
+    }
+
+    data = (roomID, json.dumps(player))
+    cur.execute(playerRecord, data)
+    connection.commit()
+    connection.close()
+
+    return roomID
+
+def joinGameSession(roomID, playerName):
+    connection = create_connection()
+    cur = connection.cursor()
+
+    cur.execute('''
+    SELECT Players FROM ActiveSessions WHERE RoomID = %s
+    ''', (roomID,))
+    numPlayers = cur.fetchone()[0]
+    print(numPlayers)
+
+    cur.execute('''
+    SELECT Player1, Player2, Player3, Player4 FROM PlayerRosters WHERE RoomID = %s
+    ''', (roomID,))
+    record = cur.fetchone()
+
+    if record is not None:
+        players = [item for item in record if item is not None]
+
+    if len(players) == numPlayers:
+        print("asdfsdafsad")
+        showAvailableRooms = listAvailableRooms()
+        return render_template("sessionPage.html", message = "Sorry, The room is full!", data = showAvailableRooms)
+    
+    if players[0]["gameStatus"] == True:
+        showAvailableRooms = listAvailableRooms()
+        return render_template("sessionPage.html", message = "Sorry, The game has started!", data = showAvailableRooms)
+    
+    for i in range(1, numPlayers):
+        if record[i] == None:
+            playerRecord = '''
+                UPDATE PlayerRosters
+                SET {} = %s
+                WHERE RoomID = %s
+            '''.format("Player" + str(i + 1))
+        
+            player = addPlayer(roomID, playerName)
+
+            data = (json.dumps(player), roomID)
+            cur.execute(playerRecord, data)
+
+            connection.commit()
+            connection.close()
+            break
+
+    return redirect(f'/room/{roomID}')
+
+def addGameRecord(roomID, playerName):
+    connection = create_connection()
+    cur = connection.cursor()
+    cur.execute('''
+        UPDATE GameHistory
+        SET Winner = %s
+        WHERE RoomID = %s
+    ''', (playerName, roomID))
+    
+    connection.commit()
+    connection.close()
 
 initializeTable()
 
@@ -182,100 +293,13 @@ def gameSession():
         title = request.form.get("myTitle")
 
         if roomID is None:
-            connection = create_connection()
-            roomID = generateRoomID()
-            cur = connection.cursor()
-
-            sessionRecord = '''
-                INSERT INTO ActiveSessions(RoomID, RoomTitle, HostName, Players)
-                VALUES (%s, %s, %s, %s)
-            '''
-            data = (roomID, 'Game Room - '+ (roomID), playerName, numPlayers)
-            cur.execute(sessionRecord, data)
-
-            gameHistoryRecord = '''
-                INSERT INTO GameHistory(RoomID, RoomTitle, HostName, Players)
-                VALUES (%s, %s, %s, %s)
-            '''
-            data = (roomID, 'Game Room - '+ (roomID), playerName, numPlayers)
-            cur.execute(gameHistoryRecord, data)
-
-            playerRecord = '''
-            INSERT INTO PlayerRosters (RoomID, Player1)
-            VALUES (%s, %s)
-            '''
-            player = {
-                "playerID": str(uuid.uuid4()),
-                "name": playerName,
-                "roomID": roomID,
-                "readyStatus": True,
-                "hand": [],
-                "discard": [],
-                "token": 0,
-                "isHost": True,
-                "isMyTurn": False,
-                "outOfRound": False,
-                "invincible": False
-            }
-
-            data = (roomID, json.dumps(player))
-            cur.execute(playerRecord, data)
-            connection.commit()
-            connection.close()
+            roomID = createGameSession(title, playerName, numPlayers)
             return redirect(f'/room/{roomID}')
         else:
-            connection = create_connection()
-            cur = connection.cursor()
-            cur.execute('''
-            SELECT Players FROM ActiveSessions WHERE RoomID = %s
-            ''', (roomID,))
-            numPlayers = cur.fetchone()[0]
-
-            cur.execute('''
-            SELECT Player1, Player2, Player3, Player4 FROM PlayerRosters WHERE RoomID = %s
-            ''', (roomID,))
-            record = cur.fetchone()
-            print(record)
-            if record is not None:
-                players = [item for item in record if item is not None]
-
-            if len(players) == numPlayers:
-                showAvailableRooms = listAvailableRooms()
-                return render_template("sessionPage.html", message = "Sorry, The room is full!", data = showAvailableRooms)
-            
-            for i in range(1, numPlayers):
-                if record[i] == None:
-                    playerRecord = '''
-                        UPDATE PlayerRosters
-                        SET {} = %s
-                        WHERE RoomID = %s
-                    '''.format("Player" + str(i + 1))
-                
-                    player = {
-                        "playerID": str(uuid.uuid4()),
-                        "name": playerName,
-                        "roomID": roomID,
-                        "readyStatus": False,
-                        "hand": [],
-                        "discard": [],
-                        "token": 0,
-                        "isHost": False,
-                        "isMyTurn": False,
-                        "outOfRound": False,
-                        "invincible": False
-                    }
-
-                    data = (json.dumps(player), roomID)
-                    cur.execute(playerRecord, data)
-
-                    connection.commit()
-                    connection.close()
-                    break
-
-            return redirect(f'/room/{roomID}')
+            return joinGameSession(roomID, playerName)
     else:
-        showAvaibleRooms = listAvaibleRooms()
-        return render_template("sessionPage.html", data = showAvaibleRooms )
+        showAvailableRooms = listAvailableRooms()
+        return render_template("sessionPage.html", data = showAvailableRooms )
 
 @app.route("/room/<roomID>")
 def room(roomID):
@@ -414,6 +438,7 @@ def startGame(data):
                 outOfCards.append(deck.pop())
 
         players[0]["deck"] = deck
+        players[0]["gameStatus"] = True
 
         if len(deck) > 0 and len(players) > 1:
             index = random.randint(0, len(players) - 1)
@@ -609,21 +634,11 @@ def playCard(data):
 
     if len(players) == 2:
         if players[0]["token"] == 7:
-            cur.execute('''
-            UPDATE GameHistory
-            SET Winner = %s
-            WHERE RoomID = %s
-            ''', (players[0]["name"], roomID))
-            connection.commit()
+            addGameRecord(roomID, players[0]["name"])
             socketio.emit("message", { "message": "Congratulations, {} Wins the Game".format(players[0]["name"])}, room = roomID)
             return
         elif players[1]["token"] == 7:
-            cur.execute('''
-            UPDATE GameHistory
-            SET Winner = %s
-            WHERE RoomID = %s
-            ''', (players[1]["name"], roomID))
-            connection.commit()
+            addGameRecord(roomID, players[1]["name"])
             socketio.emit("message", { "message": "Congratulations, {} Wins the Game".format(players[1]["name"])}, room = roomID)
             return
         elif players[0]['outOfRound'] == True:
@@ -638,12 +653,7 @@ def playCard(data):
         victor = list(filter(lambda player: player["outOfRound"] == False, players))
         if len(winner) == 1:
             if winner[0]["token"] == 5:
-                cur.execute('''
-                UPDATE GameHistory
-                SET Winner = %s
-                WHERE RoomID = %s
-                ''', (winner[0]["name"], roomID))
-                connection.commit()
+                addGameRecord(roomID, winner[0]["name"])
                 socketio.emit("message", { "message": "Congratulations, {} Wins the Game".format(winner[0]["name"])}, room = roomID)
                 return
         if len(victor) == 1:
@@ -655,12 +665,7 @@ def playCard(data):
         victor = list(filter(lambda player: player["outOfRound"] == False, players))
         if len(winner) == 1:
             if winner[0]["token"] == 4:
-                cur.execute('''
-                UPDATE GameHistory
-                SET Winner = %s
-                WHERE RoomID = %s
-                ''', (winner[0]["name"], roomID))
-                connection.commit()
+                addGameRecord(roomID, winner[0]["name"])
                 socketio.emit("message", { "message": "Congratulations, {} Wins the Game".format(winner[0]["name"])}, room = roomID)
                 return
         if len(victor) == 1:
