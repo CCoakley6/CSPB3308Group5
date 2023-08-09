@@ -45,6 +45,10 @@ color: #0000FF;
     visibility: hidden;
     font-size: 18px;
 }
+.card-body pre {
+    opacity: 0;
+    visibility: hidden;
+}
 .card-body:hover h3 {
     opacity: 0;
     visibility: hidden;
