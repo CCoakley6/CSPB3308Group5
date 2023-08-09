@@ -53,3 +53,7 @@ color: #0000FF;
     opacity: 1;
     visibility: visible;
 }
+.card-body:hover pre {
+    opacity: 1;
+    visibility: visible;
+}
