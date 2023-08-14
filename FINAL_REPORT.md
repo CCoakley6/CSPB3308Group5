@@ -29,20 +29,20 @@ Our dedicated team of developers and designers:
 We have successfully developed a web-based card game that encompasses various components and technologies. The main aspects of our project include:
 
 1. **Front-End Development**: We utilized HTML, CSS, Bootstrap and Javascript to design and create user interface of the game. This includes five main pages:
-- **Landing Page**: This page serves as the entry point for users. It contains navigation bars, a welcome section, game rules, a game history table and a link redirecting to `About Us` page. The navigation bars at the top offers links to `Home` page, `Session` page, `About Us` page and our github repository. 
-- **Session Page**: This page provides the funtionality for users to create and join game, as well as view existing game sessions.
-- **About Us Page**: This page provides information about each team member behind the game and its development process.
-- **Game Page**: The core of the application, this page hosts the actual card game for 2 - 4 players, where players can interact and enjoy the gameplay in a specific room.
-- **Error Page**: This page could be displayed when users visit non-existent or broken links.
+    - **Landing Page**: This page serves as the entry point for users. It contains navigation bars, a welcome section, game rules, a game history table and a link redirecting to `About Us` page. The navigation bars at the top offers links to `Home` page, `Session` page, `About Us` page and our github repository. 
+    - **Session Page**: This page provides the funtionality for users to create and join game, as well as view existing game sessions.
+    - **About Us Page**: This page provides information about each team member behind the game and its development process.
+    - **Game Page**: The core of the application, this page hosts the actual card game for 2 - 4 players, where players can interact and enjoy the gameplay in a specific room.
+    - **Error Page**: This page could be displayed when users visit non-existent or broken links.
 
 2. **Back-end Development**
-- Python served as the primary programming language for the back-end development.
-- We employed the Flask framework to build the server-side logic and handle requests from the front-end.
-- Flask-SocketIO facilitated the seamless communication between players, enhancing the interactive experience.
+    - Python served as the primary programming language for the back-end development.
+    - We employed the Flask framework to build the server-side logic and handle requests from the front-end.
+    - Flask-SocketIO facilitated the seamless communication between players, enhancing the interactive experience.
 
 3. **Database and Hosting**
-- PostgreSQL was chosen as the database system to store relevant game data such as player information, game history, and session information.
-- Hosting on Render allows our web application to be publicly accessible and provides a reliable environment for users to access our card game.
+    - PostgreSQL was chosen as the database system to store relevant game data such as player information, game history, and session information.
+    - Hosting on Render allows our web application to be publicly accessible and provides a reliable environment for users to access our card game.
 
 Overall, we've successfully brought together various technologies to create a functional web-based card game, encompassing both front-end and back-end components. We're excited to present our game to users and are confident in its functionality and design. 
 
